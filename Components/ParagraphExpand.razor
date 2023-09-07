@@ -1,0 +1,39 @@
+﻿@namespace IdentityBlazor.Components
+<Paragraph Class="paragraph-expand">
+    <span class="display-expand">
+        @(_expanded ? Value : _display)
+    </span>
+    @if (_expandable)
+    {
+        <a style="font-size:12px" class="btn-expand" @onclick="()=>{_expanded=!_expanded;}">
+            <Icon Type="@(_expanded?"up":"down")"></Icon>  @ButtonText
+        </a>
+    }
+</Paragraph>
+
+
+@code {
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public int? BreakLength { get; set; }
+    [Parameter]
+    public string? ButtonText { get; set; } = "See more";
+    bool _expanded = false;
+    bool _expandable = false;
+    string? _display;
+    protected override void OnInitialized()
+    {
+        if (!string.IsNullOrEmpty(Value) && BreakLength != null && BreakLength > 0 && BreakLength.Value < Value.Length)
+        {
+            _display = string.Concat(Value.AsSpan(0, BreakLength.Value), "... ");
+            _expandable = true;
+
+        }
+        else
+        {
+            _display = Value;
+            _expandable = false;
+        }
+        base.OnInitialized();
+    }
+
+}

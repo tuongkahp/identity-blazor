@@ -1,0 +1,22 @@
+﻿@using System.Text.Json
+<div style="display: flex;justify-content: space-between;align-items: center;">
+    <Text>@(DisplayText ?? Value)</Text>
+    @if (Value != null)
+    {
+        <Button Type="@ButtonType.Text" OnClick="@(()=> @CopyTextToClipboard())" Icon="copy">
+        </Button>
+    }
+</div>
+
+@code {
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public string? DisplayText { get; set; }
+    [Inject] protected IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] protected NotificationService NotificationService { get; set; } = default!;
+    [Inject] protected CustomNotificationService CustomNotificationService { get; set; } = default!;
+    private async Task CopyTextToClipboard()
+    {
+        await JSRuntime.InvokeVoidAsync("clipboardCopy.copyText", Value);       
+        _ = CustomNotificationService.Success("Sao chép vào clipboard!", "Thực hiện thành công");
+    }
+}

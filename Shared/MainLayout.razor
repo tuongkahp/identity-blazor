@@ -1,0 +1,259 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager _navigation
+@inject BrowserService _browserService
+@inject NotificationService NotificationService;
+<PageTitle></PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        @if (Width != 0)
+        {
+            <Layout>
+                @if (Width > 768) // Destop
+                {
+                    <Sider Width="255" Class="main-side-bar" Collapsible Collapsed=@collapsed NoTrigger CollapsedChanged="OnCollapse">
+                        <div class="logo-group" style="justify-content: @(collapsed ? "center" : "space-between")">
+                            @if (collapsed)
+                            {
+                                <a @onclick="Toggle" class="lg-trigger">
+                                    <div class="lgt-collapsed"></div>
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="/">
+                                    <Image Src="images/logo-top-left.png" Preview="false" Alt="main-logo" />
+                                </a>
+                                <a @onclick="Toggle" class="lg-trigger">
+                                    <div class="lgt-not-collapsed"></div>
+                                </a>
+                            }
+                        </div>
+                        <div style="flex: 1;overflow-y: auto;overflow-x: hidden;">
+                            <MainMenu ThemeStyle="MenuTheme.Dark" />
+                        </div>
+                    </Sider>
+                }
+                <Layout Style=@RenderCollapsedPadding() Class="site-layout">
+                    <Header Class=@RenderHeaderClass()>
+                        @if (Width > 768)
+                        {
+                            <ul class="slh-header-menu"></ul>
+                            <Dropdown Class="slh-user-dropdown" Placement="@Placement.BottomRight" Trigger="@(new Trigger[] { Trigger.Click })">
+                                <Overlay>
+                                    <Menu Class="slhud-menu">
+                                        @* <MenuItem>
+                                <a class="slhudm-item" rel="noopener noreferrer" href="javascript:;">
+                                <Icon Type="setting" Theme="outline" Style="margin-right: 8px" />
+                                <span>Thông tin cá nhân</span>
+                                </a>
+                                </MenuItem>
+                                *@
+                                        <MenuItem>
+                                            <a class="slhudm-item" rel="noopener noreferrer" href="/Identity/Account/Changepassword">
+                                                <Icon Type="lock" Theme="outline" Style="margin-right: 8px" />
+                                                <span>Đổi mật khẩu</span>
+                                            </a>
+                                        </MenuItem>
+                                        <MenuItem>
+                                            <a class="slhudm-item text-danger" rel="noopener noreferrer" href="/Identity/Account/Logout?returnUrl=/">
+                                                <Icon Type="logout" Theme="outline" Style="margin-right: 8px" />
+                                                <span>Đăng xuất</span>
+                                            </a>
+                                        </MenuItem>
+                                    </Menu>
+                                </Overlay>
+                                <ChildContent>
+                                    <a class="ant-dropdown-link" @onclick:preventDefault>
+                                        <span class="slh-username">@context.User.Identity?.Name</span>
+                                        <Avatar Style="background-color: #1890FF" Icon="user" />
+                                    </a>
+                                </ChildContent>
+                            </Dropdown>
+                        }
+                        else
+                        {
+                            <a href="/">
+                                <Image Src="images/logo-top-left.png" Preview="false" Alt="main-logo" />
+                            </a>
+                            <div class="slhm-right-group">
+                                @if (visibleLeftDrawer)
+                                {
+                                    <a @onclick="_ => closeLeft()" class="lg-trigger">
+                                        <div class="lgt-not-collapsed"></div>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a @onclick="_ => openLeft()" class="lg-trigger">
+                                        <div class="lgt-collapsed"></div>
+                                    </a>
+                                }
+                                <Dropdown Class="slh-user-dropdown-mobile" Placement="@Placement.BottomRight" Trigger="@(new Trigger[] { Trigger.Click })">
+                                    <Overlay>
+                                        <Menu Class="slhud-menu-mobile">
+                                            @* <MenuItem>
+                                    <a class="slhudm-item" target="_blank" rel="noopener noreferrer" href="javascript:;">
+                                    <Icon Type="setting" Theme="outline" Style="margin-right: 8px" />
+                                    <span>Thông tin cá nhân</span>
+                                    </a>
+                                    </MenuItem>
+                                    *@
+                                            <MenuItem>
+                                                <a class="slhudm-item" target="_blank" rel="noopener noreferrer" href="/Identity/Account/Changepassword">
+                                                    <Icon Type="lock" Theme="outline" Style="margin-right: 8px" />
+                                                    <span>Đổi mật khẩu</span>
+                                                </a>
+                                            </MenuItem>
+                                            <MenuItem>
+                                                <a class="slhudm-item text-danger" target="_blank" rel="noopener noreferrer" href="/Identity/Account/Logout?returnUrl=/">
+                                                    <Icon Type="logout" Theme="outline" Style="margin-right: 8px" />
+                                                    <span>Đăng xuất</span>
+                                                </a>
+                                            </MenuItem>
+                                        </Menu>
+                                    </Overlay>
+                                    <ChildContent>
+                                        <a class="ant-dropdown-link" @onclick:preventDefault>
+                                            <Avatar Style="background-color: #FFF; color:#1890ff" Icon="user" />
+                                        </a>
+                                    </ChildContent>
+                                </Dropdown>
+                            </div>
+                        }
+                    </Header>
+                    <Content>
+                        @Body
+                    </Content>
+                    <Drawer Class="sl-drawer-left" Visible="@visibleLeftDrawer" Placement="left" OnClose="_ => closeLeft()">
+                        <Title>
+                            <Image Src="images/logo IRIS mini.png" Preview="false" Alt="main-logo" />
+                        </Title>
+                        <MainMenu ThemeStyle="MenuTheme.Light" />
+                    </Drawer>
+                    <Footer Class="ant-layout-footer-custom" Style="text-align: right;">
+                        <span class="m-footer__copyright">
+                            © Copyright Reserved by <a href="" class="m-link"><img src="/images/logo-smsc-footer-right.png"></a>
+                        </span>
+                    </Footer>
+                </Layout>
+            </Layout>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <Logout CurrentPath="@_navigation.ToBaseRelativePath(_navigation.Uri)" />
+    </NotAuthorized>
+</AuthorizeView>
+@*<LostConnect />*@
+@code {
+    // Collapsed side bar
+    bool collapsed;
+    string collapsedPadding = "padding-left: 255px";
+    //string collapsedHeaderWidth = "width: calc(100% - 255px)";
+    void Toggle()
+    {
+        collapsed = !collapsed;
+        if (collapsed)
+        {
+            collapsedPadding = "padding-left: 80px";
+            //collapsedHeaderWidth = "width: calc(100% - 80px)";
+        }
+        else
+        {
+            collapsedPadding = "padding-left: 255px";
+            //collapsedHeaderWidth = "width: calc(100% - 255px)";
+        }
+    }
+    void OnCollapse(bool isCollapsed)
+    {
+        Console.WriteLine($"Collapsed: {isCollapsed}");
+    }
+    private string RenderCollapsedPadding()
+    {
+        if (Width > 768)
+        {
+            return collapsedPadding;
+        }
+        else
+        {
+            return "";
+        }
+    }
+    private string RenderHeaderClass()
+    {
+        if (Width > 768)
+        {
+            return "site-layout-header";
+        }
+        else
+        {
+            return "site-layout-header-mobile";
+        }
+    }
+    // Get window width
+    public int Width { get; set; } = 0;
+    async Task GetDimensions()
+    {
+        var dimension = await _browserService.GetDimensionsAsync();
+        Width = dimension.Width;
+        StateHasChanged();
+    }
+
+    // Drawer left
+    bool visibleLeftDrawer = false;
+
+    void openLeft()
+    {
+        this.visibleLeftDrawer = true;
+    }
+
+    void closeLeft()
+    {
+        this.visibleLeftDrawer = false;
+    }
+    // AppState
+    private void AppStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //await base.OnAfterRenderAsync(firstRender);
+            await GetDimensions();
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        LocaleProvider.SetLocale("vi-VN");
+        LocaleProvider.CurrentLocale.Empty.Description = "Không có dữ liệu";
+        LocaleProvider.CurrentLocale.DatePicker.FirstDayOfWeek = DayOfWeek.Monday;
+        LocaleProvider.CurrentLocale.DatePicker.Lang = new DateLocale
+            {
+                DateSelect = "Chọn ngày",
+                WeekSelect = "Chọn tuần",
+                MonthSelect = "Chọn tháng",
+                YearSelect = "Chọn năm",
+                QuarterSelect = "Chọn quý",
+                Today = "Hôm nay",
+                Now = "Hiện tại",
+                StartDate = "Ngày bắt đầu",
+                EndDate = "Ngày kết thúc",
+                ShortWeekDays = new string[7] { "CN", "T2", "T3", "T4", "T5", "T6", "T7" }
+            };
+        NotificationService.Config(new NotificationGlobalConfig
+            {
+                Top = 48,
+                Bottom = 48,
+                Duration = 20,
+                Placement = NotificationPlacement.BottomRight,
+            });
+    }
+    public void Dispose()
+    {
+    }
+}

@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@namespace IdentityBlazor.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="~/" />
+    <script src="_content/AntDesign/js/ant-design-blazor.js"></script>
+    <!-- Font Awesome -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link href="_content/AntDesign/css/ant-design-blazor.css" rel="stylesheet" />
+    <link href="css/site.css" asp-append-version=true rel="stylesheet" />
+    <link href="css/custom.css" asp-append-version=true rel="stylesheet" />
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+</head>
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed" style="position: relative">
+    @RenderBody()
+    <script src="_framework/blazor.server.js" autostart="false"></script>
+    <script>
+        Blazor.start({
+            configureSignalR: function (builder) {
+                builder.configureLogging("information");
+            }
+        });
+    </script>
+    <script type="text/javascript">
+        //Get Device Size
+        window.getDimensions = function () {
+            return {
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+        };
+    </script>
+</body>
+</html>

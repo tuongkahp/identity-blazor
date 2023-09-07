@@ -1,0 +1,32 @@
+﻿@using System.Security.Claims
+<Menu Theme="ThemeStyle" DefaultOpenKeys=@(new[] {"Menu2"}) Mode="MenuMode.Inline" Class="ct-main-menu">
+    <MenuItem RouterLink="/" RouterMatch="NavLinkMatch.All" Class="main-menu-item" Key="/" Style="display: none">
+        <div class="flexbox">
+            <Icon Type="home" Theme="outline" Style="font-size:18px" />
+            <span>Trang chủ</span>
+        </div>
+    </MenuItem>
+    <MenuItem RouterLink="/Menu1" RouterMatch="NavLinkMatch.All" Class="main-menu-item" Key="/Menu1">
+        <div class="flexbox">
+            <Icon Type="database" Theme="outline" Style="font-size:18px" />
+            <span class="text">Menu1</span>
+        </div>
+    </MenuItem>
+    <SubMenu Key="Menu2">
+        <TitleTemplate>
+            <Icon Type="area-chart" Theme="outline" Style="font-size:18px" />
+            <span class="text">Menu2</span>
+        </TitleTemplate>
+        <ChildContent>
+            <MenuItem RouterLink="/Menu2_1" RouterMatch="NavLinkMatch.All" Class="main-menu-item" Key="Menu2_1">
+                <div class="flexbox">
+                    <Icon Type="history" Theme="outline" Style="font-size:18px" />
+                    <span class="text">Menu2_1</span>
+                </div>
+            </MenuItem>            
+        </ChildContent>
+    </SubMenu>
+</Menu>
+@code {
+    [Parameter] public MenuTheme ThemeStyle { get; set; } = MenuTheme.Dark;
+}
